@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Camera {
+  CameraId           Int       @id @default(autoincrement())
+  latitude           String
+  longitude          String
+  description        String
+
+  type               CameraType
+
+
+  createdAt          DateTime  @default(now())
+
+  confirmedDevices Device[] @relation("confirmedCamerasRel")
+  deniedDevices Device[] @relation("deniedCamerasRel")
+
+}
+
+model Device {
+  DeviceId           String    @id @unique
+  confirmedCameras     Camera[] @relation("confirmedCamerasRel")
+  deniedCameras Camera[] @relation("deniedCamerasRel")
+}
+
+enum CameraType {
+  SECURITY
+  SPEED
+  FACEREC
+}
